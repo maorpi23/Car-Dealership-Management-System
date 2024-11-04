@@ -1,0 +1,148 @@
+package carDealership;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+
+
+public class Car {
+protected String carNum;
+protected int year;
+protected String name;
+protected double kilometers;
+protected double price;
+
+/**
+ * the constructor creates a new car object
+ * @param carNum-presents the car serial number
+ * @param year- presents the year of the car
+ * @param name-presents the car's company name
+ * @param kilometers- presents in total how many kilometers the car drove so far 
+ * @param price- presents the price of the car
+ * @throws Exception when we will receive invalid value in any of the parameters an error exception will be thrown 
+ */
+public Car (String carNum, int year, String name,double kilometers, double price) throws Exception {
+	setCarNum(carNum);
+	setYear(year);
+	setName(name);
+	setKilometers(kilometers);
+	setPrice(price);
+}
+
+/**
+ * the method sets the carNum parameter due to the received value
+ * @param carNum- presents the car serial number
+ * @throws Exception- the carNum parameter must be a 6 digits String otherwise an error exception will be thrown
+ */
+private void setCarNum(String carNum) throws Exception{
+	if(carNum.length()!=6 ) {
+		throw new Exception ("the car number must contain 6 digits string");
+	}
+	boolean isValid=carNum.matches("\\d+");
+	if(isValid==false) {
+		throw new Exception("the car number must contain digits only");
+	}
+	if(isValid==true && carNum.length()==6) {
+		this.carNum=carNum;
+	}
+}
+
+/**
+ * the method sets the year parameter due to the received value
+ * @param year-presents the year of the car
+ * @throws Exception- the car's year must be between 2017 to 2023 otherwise an error exception will be thrown
+ */
+private void setYear(int year) throws Exception{
+	if(year<2017 || year>2023) {
+		throw new Exception("the year must be between 2017-2023");
+	}
+	else {
+		this.year=year;
+	}
+}
+
+/**
+ * the method sets the name parameter due to the received value
+ * @param name-presents the name of the car's company
+ * @throws Exception- if the method received an empty string an error exception will be thrown
+ */
+private void setName(String name) throws Exception{
+if(name.length()==0) {
+	throw new Exception("the car name must be contain any string");
+}
+else {
+	this.name=name;
+}
+}
+
+/**
+ * the method sets the kilometers parameter due to the received value
+ * @param kilometers- presents the total amount of kilometers that the car drove so far
+ * @throws Exception- the method must received a non negative number otherwise an error exception will be thrown
+ */
+private void setKilometers(double kilometers) throws Exception{
+	if(kilometers<0) {
+		throw new Exception("kilometers must be a non negative double");
+	}
+	else {
+		this.kilometers=kilometers;
+	}
+}
+
+/**
+ * the method sets the price parameter due to the received value
+ * @param price-presents the price of the car
+ * @throws Exception-the method must received a positive number, otherwise an error exception will be thrown
+ */
+private void setPrice(double price) throws Exception{
+	if(price<=0) {
+		throw new Exception("the price must be a positive number");
+	}
+	else {
+		this.price=price;
+	}
+}
+
+/**
+ * the method calculates and sets the new car price after the value reduction of the car
+ * @param percents-presents the down value percentages from the car price
+ * @throws Exception the method must received a non negative number and the reduction can't be over 5000 otherwise an error exception will be thrown
+ */
+public void downValue(double percents) throws Exception{
+	double newPrice=((100-percents)*this.price)/100;
+	if(percents<0) {
+		throw new Exception("the percentage of the down value must be non negative");
+	}	
+	else if((this.price-newPrice)>5000) {
+		throw new Exception("the car's price reduction is too high");
+	}
+	else {
+		this.price=newPrice;
+	}
+}
+
+/**
+ *  the method prints in a file the details of every car that sold
+ * @param p-presents the path to the file 
+ * @throws IOException /
+ */
+public void carSell (Path p) throws IOException {
+	try {
+		Files.writeString(p, this.toString(), StandardOpenOption.APPEND);
+	} 
+	catch (Exception e) {
+		System.out.println(e.getMessage());
+	}
+}
+
+/**
+ * the method prints the car details
+ */
+public String toString() {
+	return this.carNum+" "+this.year+" "+this.name+" "+this.kilometers+" "+this.price;
+}
+
+
+}
