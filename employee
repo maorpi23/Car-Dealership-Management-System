@@ -1,0 +1,117 @@
+package carDealership;
+ 
+import java.nio.file.Path;
+
+public class employee implements Comparable <employee> {
+protected String name;
+protected int ID;
+protected int numOfSales;
+
+/**
+ * the constructor creates a new employee for the carDealership 
+ * @param name- presents the name of the employee
+ * @param ID- presents the id of the employee
+ * @param numOfSales- presents the employee's number of sales
+ * @throws Exception if one of the employee's values is invalid an exception will be thrown
+ */
+public employee(String name, int ID, int numOfSales) throws Exception {
+	setName(name);
+	setID(ID);
+	setNumOfSales(numOfSales);
+}
+/**
+ * the method sets the name parameter due to the received value
+ * @param name- presents the name of the employee
+ * @throws Exception if the name will contain any non letter char 
+ */
+private void setName(String name) throws Exception{
+	boolean onlyLeters=name.matches("[a-zA-Z]+");
+	if(onlyLeters==false) {
+		throw new Exception ("error, the employee's name must contain letters only");
+	}
+	else {
+		this.name=name;
+	}
+}
+/**
+ * the method sets the id parameter due to the received value
+ * @param ID- presents the employee's id
+ * @throws Exception if the id won't contain 9 digits number
+ */
+private void setID (int ID) throws Exception{
+	int digits=0;
+	int temp=ID;
+	while(temp>=0) {
+		temp=temp/10;
+		digits++;
+	}
+	if(digits!=9) {
+		throw new Exception ("error the ID must contain 9 digits only");
+	}
+	else {
+		this.ID=ID;
+	}
+}
+
+/**
+ * the method sets the numOfSales parameter due to the received value
+ * @param numOfSales- presents the employee's number of sales
+ * @throws Exception if numOfSales will be a negative number
+ */
+private void setNumOfSales (int numOfSales) throws Exception{
+	if (numOfSales<0) {
+		throw new Exception("error, the number of sales must be a non negative number");
+	}
+	else {
+		this.numOfSales=numOfSales;
+	}
+}
+/**
+ * the method prints the details of the sold car and updates the employee's number of sales 
+ * @param car- presents the sold car
+ * @param p-presents the sold cars file's path  
+ */
+public void carSell(Car car, Path p)  {
+	 try {
+     	car.carSell(p);  
+     	this.numOfSales++;
+     }
+     catch (Exception e)
+     {
+     	System.out.println(e.getMessage());
+     }
+}
+/**
+ * the method calculates the employee salary
+ * @return the employee's salary
+ */
+public int salary() {
+	return 6000+(this.numOfSales*100);
+}
+
+/**
+ * the method prints the employee's details
+ */
+public String toString() {
+	return "the employee details: "+"\n"+
+			"name: "+this.name+"\n"+
+			"ID: "+this.ID+"\n"+
+			"number of sales: "+this.numOfSales+"\n"+
+			"salary: "+salary();
+}
+/**
+ * the method compares between two employee's number of sales  
+ */
+public int compareTo(employee other) {
+	if(this.numOfSales==other.numOfSales) {
+		return 0;
+	}
+	else if(this.numOfSales<other.numOfSales) {
+		return -1;
+	}
+	else {
+		return 1;
+	}
+}
+
+}
