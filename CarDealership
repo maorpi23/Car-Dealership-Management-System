@@ -1,0 +1,261 @@
+package carDealership;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.Scanner;
+
+
+public class CarDealership {
+	/**
+	 * creating a carDealership System with initial lists of employees, available cars and sold cars
+	 * then running a menu when there the user can perform actions until he decides to exit from the system  
+	 * @param <E>/
+	 * @param args /
+	 * @throws Exception/
+	 */
+	 public static <E> void main(String[] args) throws Exception {
+		 Scanner in = new Scanner(System.in);
+		 
+		 Path p1= Paths.get("Sold.txt");
+		 Path p2= Paths.get("CarDealership.txt");
+	     Path p3= Paths.get("Employee.txt");
+
+		   
+			 ArrayList<Car> carList = new ArrayList<>();
+
+			    try  {
+		            ArrayList<String> lines = new ArrayList<>(Files.readAllLines(p2));
+		            for (String line : lines) {
+		                try {
+		                    String[] carData = line.split(" ");
+		                    String carNumber = carData[0];
+		                    int year = Integer.parseInt(carData[1]);
+		                    String manufacturer = carData[2];
+		                    int km = Integer.parseInt(carData[3]);
+		                    int price = Integer.parseInt(carData[4]);
+		                    Car car = new Car(carNumber, year, manufacturer, km, price);
+		                    carList.add(car);
+		                } 
+		                catch (Exception e) {
+		                    System.out.println("invalid car value: " + line);
+		                }
+		            }
+		        } 
+			    catch (IOException e) {
+		            System.out.println("can't read the car data from the file: " + e.getMessage());
+		        }
+		        for (Car car : carList) {
+		            System.out.println(car);
+		        }
+			ArrayList<employee> employeeList = new ArrayList<>();
+		    try {
+		        ArrayList<String> lines = new ArrayList<>(Files.readAllLines(p3));
+		        for (String line : lines) {
+		            try {
+		                String[] employeeData = line.split(" ");
+		                String name = employeeData[0];
+		                int id = Integer.parseInt(employeeData[1]);
+		                int salesCounter = Integer.parseInt(employeeData[2]);
+		                employee employee = new employee(name, id, salesCounter);
+		                employeeList.add(employee);
+		            } 
+		            
+		            catch (Exception e) {
+		                System.out.println("Invalid employee data: " + line);
+		            }
+		        }
+		    } 
+		    
+		    catch (IOException e) {
+		        System.out.println("Failed to read employee data from file: " + e.getMessage());
+		    }
+
+		    for (employee employee : employeeList)  {
+		        System.out.println(employee);
+		    }	
+		    
+		    
+		 String menu="please select your option:"+"\n"+
+				 	"1-to print the employee's list"+"\n"+
+				 	"2-to print the car's list that have not sold yet"+"\n"+
+				 	"3- to sell a car"+"\n"+
+				 	"4-to add a new car to the dealership"+"\n"+
+				 	"5-to exit from the menu";
+		 carDealshipSystem i;
+		 boolean stayInSystem=true;
+		 while(stayInSystem==true) {
+			 System.out.println(menu);
+			 int choose=in.nextInt();
+			 i = carDealshipSystem.values()[choose-1]; 
+			 switch (i) {
+			 case EMPLOYEELIST:
+				 sortArray(employeeList);
+			for(employee emp:employeeList) {
+				System.out.println(emp);
+			}
+			 break;
+			 case CARLIST:
+				 for (Car car : carList) 
+			        {
+			            System.out.println(car);
+			        }
+					break;
+			 case CARSALE:
+				 for (employee employee : employeeList) {
+				     System.out.println(employee);
+				 }
+				 boolean exist=false;
+				 employee emp1=null;
+				 System.out.println("please choose employee by entering his ID:");	
+				 while(exist==false) {	
+					 try {
+				 int id= in.nextInt();
+				 for(employee emp:employeeList) {
+				 	if(emp.ID==id) {
+				 		emp1=emp;				 	
+				 	}				
+				 }
+				 compareID(id,employeeList);
+				 exist=compareID(id,employeeList);
+				 }
+				 
+					 catch(Exception e) {
+				 	System.out.println("error: the employee wasn't found please try again ");
+				 }
+					 
+				 }
+				 for(Car car:carList) { 
+					 System.out.println(car);
+					 }
+					 boolean exist1=false;
+					 Car c1=null;
+					 int n=0;
+					 System.out.println("please choose a car by entering his number ");
+					 while(exist1==false) {
+					try {	 
+					 String carNum=in.next();
+					 for(Car car:carList) {
+					 if(car.carNum.equals(carNum)) {
+					 	c1=car;
+					  n=carList.indexOf(car);
+					 }
+					 }
+					 compareCarNum(carNum,carList);
+					 exist1=compareCarNum(carNum,carList);
+					 } 
+					catch(Exception e) {
+						System.out.println("error the car wasn't found please try again");
+					}
+					 }
+				 emp1.carSell(c1, p1);
+					 carList.remove(n);
+					 break;
+			 case ADDCAR:
+				 try {
+			System.out.println("please enter the car number:");
+			String carNum=in.next();
+			System.out.println("please enter the car's year:");
+			int year=in.nextInt();
+			System.out.println("please enter the car's company:");
+			String name=in.next();
+			System.out.println("please enter the car's kilometers:");
+			double km=in.nextDouble();
+			System.out.println("please enter the car's price:");
+			double price=in.nextDouble();
+			Car newCar=new Car(carNum,year,name,km,price);
+			carList.add(newCar);
+				 }
+			catch(Exception e) {
+	        	System.out.println(e.getMessage());
+
+			}
+			break;
+			 case EXIT:
+				 try
+					{
+						Files.delete(p2);
+						Path p4 = Paths.get("CarDealership.txt");
+						Files.createFile(p4);
+						  ArrayList<String> lines = new ArrayList<>(Files.readAllLines(p2));
+						  
+				          for (Car car : carList) 
+				          {              
+				        	Files.writeString(p4, car.toString(), StandardOpenOption.APPEND);
+				        	System.out.println("The dealership file updated. ");
+				          }
+					}
+			        catch (Exception e)
+			        {
+			        	System.out.println(e.getMessage());
+			        }
+				 stayInSystem=false;
+					break; 
+					default:
+						System.out.println("invalid number please try again:");
+			 }
+		 }
+		 			
+	 }
+	/**
+	 * the method sorts an arrayList array by using the compare to method
+	 * @param <T>/
+	 * @param arr- presents the array that we would like to sort
+	 */
+	 public static <T extends Comparable<T>> void sortArray(ArrayList<T> arr){
+	        for (int i=0; i<arr.size()-1; i++) {
+	            for (int j=0; j<arr.size()-1-i; j++) {
+	                if (arr.get(j).compareTo(arr.get(j+1))<0) {
+	                    T temp=arr.get(j);
+	                    arr.set(j, arr.get(j+1));
+	                    arr.set(j+1, temp);
+	                }
+	            }
+	        }
+		}
+	 
+	 /**
+	  * the method compares and checks if there is an employee with the same id as we entered to the method
+	  * @param id- presents the id that we would like to compare
+	  * @param emp- presents the employee's list
+	  * @return true if there is an employee with the same id as the method received otherwise the method will return false
+	  * @throws Exception if there isn't an employee in the list with the same id an exception will be thrown
+	  */
+	 public static boolean compareID(int id,ArrayList<employee> emp) throws Exception{
+		 boolean exist=false;
+			for (employee employee : emp) {
+		        if(employee.ID ==id) {
+		        exist=true;
+		        }	        
+		    }
+			if(exist==false) {
+				throw new Exception("error: the employee wasn't found please try again");
+			}
+			return exist;
+		}
+		
+	 /**
+	  * the method compares and checks if there is a car with the same number as we entered to the method
+	  * @param carNumber- presents the car number that we would like to compare
+	  * @param car- presents the car's list
+	  * @return true if there is a car with the  same number as the method received otherwise the method will return false
+	  * @throws Exception if there isn't a car in the list with the same number an exception will be thrown
+	  */
+		public static boolean compareCarNum(String carNumber,ArrayList<Car> car) throws Exception{
+			boolean exist=false;
+			for (Car cars : car)   {
+		        if(cars.carNum.equals(carNumber))  {
+		        exist=true;
+		        }	
+		    }
+			if(exist==false) {
+	        	throw new Exception("error the car wasn't found please try again");
+	        }
+			return exist;
+		}
+	}
+
+
