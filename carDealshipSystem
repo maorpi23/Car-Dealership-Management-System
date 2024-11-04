@@ -1,0 +1,9 @@
+package carDealership;
+
+public enum carDealshipSystem {
+	/**
+	 * the enum's variables presents the menu options in the carDealership class
+	 */
+EMPLOYEELIST, CARLIST, CARSALE,ADDCAR,EXIT;
+
+}
